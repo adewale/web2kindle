@@ -10,9 +10,10 @@ export class Workflow extends WorkflowEntrypoint<Env, Params> {
 	async run(event: WorkflowEvent<Payload>, step: WorkflowStep) {
 		const { url, email } = event.payload;
 		const isArticleCached = await step.do('check for article in cache', async () => {
+			// list() matches by prefix, so require the exact key: a cached
+			// https://a.com/page-2 must not count as a hit for https://a.com/page
 			const cache = await this.env.ARTICLE_CACHE.list({ prefix: url });
-			if (cache.keys.length > 0) return true;
-			return false;
+			return cache.keys.some((key) => key.name === url);
 		});
 		if (!isArticleCached) {
 			await step.do('render article and cache', async () => {
