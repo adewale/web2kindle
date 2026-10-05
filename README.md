@@ -56,6 +56,9 @@ npm install
 # Run development server
 npm run dev
 
+# Type-check and bundle the Worker without deploying (no automated tests yet)
+npm run check
+
 # Deploy app to Cloudflare Workers
 npm run deploy
 ```
